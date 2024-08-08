@@ -50,7 +50,25 @@ def self_or_between(df: pd.DataFrame,
     return df.loc[:, 'is_between'].map({True: str_between, False: str_self})
 
 
-def self_or_between_mp(df, col_prot1='protein_p1', col_prot2='protein_p2', decoy_adj='Rev_'):
+def self_or_between_mp(df: pd.DataFrame,
+                       col_prot1: str = 'protein_p1',
+                       col_prot2: str = 'protein_p2',
+                       str_self: str = 'self',
+                       str_between: str = 'between',
+                       decoy_adj: str = 'REV_',
+                       sep: str = ';') -> pd.Series:
+    """
+    Classify CSMs as self or between links based on a ``sep`` separated list
+    :param df: Pandas DataFrame with CSMs
+    :param col_prot1: Name of column containing first protein names
+    :param col_prot2: Name of column contianing second protein names
+    :param str_self: String marking a self link
+    :param str_between: String marking a between link
+    :param decoy_adj: String marking a decoy protein (will be removed for classification)
+    :param sep: String that separates the protein lists
+    :return: Series of classifications
+    :rtype: Series
+    """
     pool_size = min([10,os.cpu_count()])
     slice_size = ceil(len(df)/pool_size)
     cols = [col_prot1, col_prot2]
@@ -65,8 +83,11 @@ def self_or_between_mp(df, col_prot1='protein_p1', col_prot2='protein_p2', decoy
         job_self_between = partial(
             self_or_between,
             decoy_adj=decoy_adj,
+            str_self=str_self,
+            str_between=str_between,
             col_prot1=col_prot1,
             col_prot2=col_prot2,
+            sep=sep,
         )
         map_res = pool.map(job_self_between, df_slices)
     return pd.concat(map_res).copy()
