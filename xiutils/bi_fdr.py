@@ -220,7 +220,21 @@ def calculate_bi_fdr(df,
                      max_slices=None,
                      decoy_p1='decoy_p1',
                      decoy_p2='decoy_p2',
-                     str_self='self'):
+                     str_self='self') -> pd.Series:
+    """
+    Calculate separate FDRs for self and between links
+
+    :param df: DataFrame with CSMs
+    :param score_col: Main score column
+    :param fdr_group_col: Self/between column
+    :param decoy_class: TT/TD/DD column
+    :param max_slices: Limit of CPU cores
+    :param decoy_p1: Decoy column for first peptide
+    :param decoy_p2: Decoy column for second peptide
+    :param str_self: String marking a self link
+    :return: Series of FDRs
+    :rtype: Series
+    """
     original_order = df.index
     if fdr_group_col is None:
         df.loc[:,'fdr_group'] = self_or_between_mp(df)
