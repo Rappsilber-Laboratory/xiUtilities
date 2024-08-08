@@ -30,7 +30,7 @@ def fdr_cutoff_plot(df,
     :param top_col_rescored: Name of the rescored top ranking column
     :param native_fdr_col: Name of the native FDR column
     :param rescore_fdr_col: Name of the rescored FDR column
-    :param mismatch_col: Name of the mismatch indication column
+    :param mismatch_col: Name of the mismatch indication column (if not provided, no mismatch counts are plotted)
     :param target_col: Name of the target indication column
     :param ylabel: Label for the y-axis
     :param print_points: List of points where to print the relation of native and rescored matches
