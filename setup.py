@@ -23,7 +23,7 @@ requirements = [
     "pytest-cov>=4.0.0",
     "pytest-flake8>=1.0.6",
     "pytest-pydocstyle>=2.3.2",
-    "py>=1.12.0",
+    "py>=1.11.0",
     "flake8==4.0.1",
     "networkx>=3.1",
     "multiprocess>=0.70.16",
