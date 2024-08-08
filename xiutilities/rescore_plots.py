@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import seaborn as sns
-import xiutils.bi_fdr as fdr
+import xiutilities.bi_fdr as fdr
 
 
 def fdr_cutoff_plot(df, xlim=0.05, score_col='match_score', rescore_col='xiMLScore', fdr_steps=0.001,
