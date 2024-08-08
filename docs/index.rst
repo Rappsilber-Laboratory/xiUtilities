@@ -4,7 +4,7 @@ API
 .. toctree::
    :maxdepth: 2
 
-   api
+   index
    license
 
 .. automodule:: xiutils.bi_fdr
