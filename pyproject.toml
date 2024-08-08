@@ -28,5 +28,3 @@ Homepage = "https://github.com/Rappsilber-Laboratory/xiUtils"
 Issues = "https://github.com/Rappsilber-Laboratory/xiUtils/issues"
 Documentation = "https://xiutils.readthedocs.io/"
 
-[tool.setuptools_scm]
-version_file = "xiutils/_version.py"
