@@ -31,6 +31,7 @@ requirements = [
     "fastparquet>=2024.5.0",
     "pyarrow>=17.0.0",
     "scipy>=1.12.0",
+    "matplotlib",
 ]
 
 test_requirements = ['pytest>=3', ]
