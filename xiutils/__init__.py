@@ -7,7 +7,7 @@ from pkg_resources import DistributionNotFound
 __author__ = """Falk Boudewijn Schimweg"""
 __email__ = 'git@falk.schimweg.de'
 try:
-    __version__ = version('xirescore')
+    __version__ = version('xiutils')
 except DistributionNotFound:
     # package is not installed
     __version__ = '0.0.0'
