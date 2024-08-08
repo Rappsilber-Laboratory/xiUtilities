@@ -16,6 +16,7 @@ def self_or_between(df: pd.DataFrame,
                     sep: str = ';') -> pd.Series:
     """
     Classify CSMs as self or between links based on a ``sep`` separated list
+
     :param df: Pandas DataFrame with CSMs
     :param col_prot1: Name of column containing first protein names
     :param col_prot2: Name of column contianing second protein names
@@ -59,6 +60,7 @@ def self_or_between_mp(df: pd.DataFrame,
                        sep: str = ';') -> pd.Series:
     """
     Classify CSMs as self or between links based on a ``sep`` separated list
+
     :param df: Pandas DataFrame with CSMs
     :param col_prot1: Name of column containing first protein names
     :param col_prot2: Name of column contianing second protein names
