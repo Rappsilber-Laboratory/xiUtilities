@@ -1,1 +1,4 @@
 /venv/
+/.idea/
+/xiutils.egg-info/
+/build/
