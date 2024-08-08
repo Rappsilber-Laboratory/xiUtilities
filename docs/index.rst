@@ -3,6 +3,7 @@ API
 ===
 .. toctree::
    :maxdepth: 2
+   :hidden:
 
    index
    license
