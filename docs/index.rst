@@ -8,10 +8,10 @@ API
    index
    license
 
-.. automodule:: xi_utils.bi_fdr
+.. automodule:: xitools.bi_fdr
   :members:
   :undoc-members:
 
-.. automodule:: xi_utils.rescore_plots
+.. automodule:: xitools.rescore_plots
   :members:
   :undoc-members:
