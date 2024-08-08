@@ -7,18 +7,31 @@ from time import sleep
 import pandas as pd
 
 
-def self_or_between(df,
-                    col_prot1='protein_p1',
-                    col_prot2='protein_p2',
-                    str_self='self',
-                    str_between='between',
-                    decoy_adj='REV_'):
+def self_or_between(df: pd.DataFrame,
+                    col_prot1: str = 'protein_p1',
+                    col_prot2: str = 'protein_p2',
+                    str_self: str = 'self',
+                    str_between: str = 'between',
+                    decoy_adj: str = 'REV_',
+                    sep: str = ';') -> pd.Series:
+    """
+    Classify CSMs as self or between links based on a ``sep`` separated list
+    :param df: Pandas DataFrame with CSMs
+    :param col_prot1: Name of column containing first protein names
+    :param col_prot2: Name of column contianing second protein names
+    :param str_self: String marking a self link
+    :param str_between: String marking a between link
+    :param decoy_adj: String marking a decoy protein (will be removed for classification)
+    :param sep: String that separates the protein lists
+    :return: Series of classifications
+    :rtype: Series
+    """
     df.loc[:, f'{col_prot1}_arr'] = df.loc[:, col_prot1]\
         .astype(str).str.replace(decoy_adj, '')\
-        .str.split(';').map(np.unique).map(list)
+        .str.split(sep).map(np.unique).map(list)
     df.loc[:, f'{col_prot2}_arr'] = df.loc[:, col_prot2]\
         .astype(str).str.replace(decoy_adj, '')\
-        .str.split(';').map(np.unique).map(list)
+        .str.split(sep).map(np.unique).map(list)
     df.loc[:, 'proteins_arr'] = (df.loc[:, f'{col_prot1}_arr'] + df.loc[:, f'{col_prot2}_arr'])
     df.loc[:, 'proteins_arr_unique'] = df.loc[:, 'proteins_arr'].map(np.unique)
     df.loc[:, 'is_between'] = ~(
