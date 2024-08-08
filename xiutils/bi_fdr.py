@@ -15,7 +15,7 @@ def self_or_between(df: pd.DataFrame,
                     decoy_adj: str = 'REV_',
                     sep: str = ';') -> pd.Series:
     """
-    Classify CSMs as self or between links based on a ``sep`` separated list
+    Classify CSMs as self or between links based on a ``sep`` separated list using multiprocessing
 
     :param df: Pandas DataFrame with CSMs
     :param col_prot1: Name of column containing first protein names
