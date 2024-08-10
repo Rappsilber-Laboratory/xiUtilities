@@ -15,3 +15,7 @@ API
 .. automodule:: xiutilities.rescore_plots
   :members:
   :undoc-members:
+
+.. automodule:: xiutilities.pandas_utils
+  :members:
+  :undoc-members:
