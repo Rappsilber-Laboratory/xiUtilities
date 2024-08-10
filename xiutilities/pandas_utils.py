@@ -30,6 +30,6 @@ def swap_columns(df, mask, column_pairs):
         df_swap = df.rename({
             c1: c2,
             c2: c1,
-        })
+        }, axis=1)
         df.loc[mask, [c1, c2]] = df_swap.loc[mask, [c1, c2]]
     return df.copy()
