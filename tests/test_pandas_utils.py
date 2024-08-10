@@ -10,10 +10,10 @@ def test_async_apply():
     random.seed(0)
     df: pd.DataFrame = pd.DataFrame(index=range(100_000))
     df['random_string1'] = df.index.to_series().apply(
-        lambda _: str(random.choices(string.ascii_letters, k=20))
+        lambda _: ''.join(random.choices(string.ascii_letters, k=20))
     )
     df['random_string2'] = df.index.to_series().apply(
-        lambda _: str(random.choices(string.ascii_letters, k=20))
+        lambda _: ''.join(random.choices(string.ascii_letters, k=20))
     )
     df['random_string_lower'] = pandas_utils.async_apply(
         df=df,
