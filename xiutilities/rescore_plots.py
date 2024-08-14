@@ -213,6 +213,21 @@ def fdr_mismatch_plot(df,
                       rescore_fdr_col=None,
                       mismatch_col='mismatch',
                       ylabel='proportion'):
+    """
+    Plot mismatch proportion over FDR cutoff
+
+    :param df: Input DF
+    :param xlim: X plot limit
+    :param score_col: Native score column
+    :param rescore_col: Rescored score column
+    :param fdr_steps: FDR step resolution
+    :param target_col: Column indicating target-target CSMs
+    :param native_fdr_col: Native FDR
+    :param rescore_fdr_col: Rescored FDR
+    :param mismatch_col: Column indicating mismatched CSMs
+    :param ylabel: Label for the y-axis
+    :return: Tuple of the resulting figure and the underlying data
+    """
     # Calculate FDR if none provided
     if native_fdr_col is None:
         df.drop(['fdr_native', 'fdr_rescored'], axis=1, inplace=True, errors='ignore')
