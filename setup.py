@@ -27,8 +27,6 @@ requirements = [
     "networkx>=3.1",
     "multiprocess>=0.70.16",
     "deepmerge~=1.1.0",
-    "fastparquet>=2024.5.0",
-    "pyarrow>=1.0.0",
     "scipy>=1.0.1",
     "matplotlib",
 ]
