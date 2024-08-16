@@ -11,8 +11,8 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    "pandas>=2.2.2",
-    "numpy>=1.26.4",
+    "pandas>=2.0.0",
+    "numpy>=1.3.0",
     "setuptools>=71.1.0",
     "numpy-indexed>=0.3.7",
     "tqdm>=4.66.0",
@@ -23,14 +23,13 @@ requirements = [
     "pytest-cov>=4.0.0",
     "pytest-flake8>=1.0.6",
     "pytest-pydocstyle>=2.3.2",
-    "py>=1.11.0",
     "flake8==4.0.1",
     "networkx>=3.1",
     "multiprocess>=0.70.16",
     "deepmerge~=1.1.0",
     "fastparquet>=2024.5.0",
-    "pyarrow>=17.0.0",
-    "scipy>=1.12.0",
+    "pyarrow>=1.0.0",
+    "scipy>=1.0.0",
     "matplotlib",
 ]
 

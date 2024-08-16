@@ -237,7 +237,7 @@ def calculate_bi_fdr(df,
     """
     original_order = df.index
     if fdr_group_col is None:
-        df.loc[:,'fdr_group'] = self_or_between_mp(df)
+        df.loc[:, 'fdr_group'] = self_or_between_mp(df)
     else:
         df.loc[:, 'fdr_group'] = df.loc[:, fdr_group_col]
     self = df.loc[:, 'fdr_group'] == str_self
