@@ -12,7 +12,7 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [
     "pandas>=2.0.0",
-    "numpy>=1.3.0",
+    "numpy>=1.7.2",
     "setuptools>=71.1.0",
     "numpy-indexed>=0.3.7",
     "tqdm>=4.66.0",
@@ -29,7 +29,7 @@ requirements = [
     "deepmerge~=1.1.0",
     "fastparquet>=2024.5.0",
     "pyarrow>=1.0.0",
-    "scipy>=1.0.0",
+    "scipy>=1.0.1",
     "matplotlib",
 ]
 
