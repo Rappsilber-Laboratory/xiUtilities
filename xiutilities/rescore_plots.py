@@ -17,7 +17,9 @@ def fdr_cutoff_plot(df,
                     mismatch_col=None,
                     target_col='isTT',
                     ylabel='CSMs',
-                    print_points=[]):
+                    print_points=[],
+                    figsize=(12, 6),
+                    dpi=100):
     """
     Plot how many CSMs fall below certain FDR thresholds (x-axis) for a native and a rescored FDR.
 
@@ -33,6 +35,8 @@ def fdr_cutoff_plot(df,
     :param mismatch_col: Name of the mismatch indication column (if not provided, no mismatch counts are plotted)
     :param target_col: Name of the target indication column
     :param ylabel: Label for the y-axis
+    :param figsize: Figure size
+    :param dpi: Figure DPI
     :param print_points: List of points where to print the relation of native and rescored matches
     :return: A tuple of the figure and the DataFrame it originates from
     """
@@ -136,7 +140,7 @@ def fdr_cutoff_plot(df,
             ])
         )
     
-    fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
+    fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
 
     data = {
         'native': samples_native_cumsum['count'],
@@ -212,7 +216,9 @@ def fdr_mismatch_plot(df,
                       native_fdr_col=None,
                       rescore_fdr_col=None,
                       mismatch_col='mismatch',
-                      ylabel='proportion'):
+                      ylabel='proportion',
+                      figsize=(12, 6),
+                      dpi=100):
     """
     Plot mismatch proportion over FDR cutoff
 
@@ -226,6 +232,8 @@ def fdr_mismatch_plot(df,
     :param rescore_fdr_col: Rescored FDR
     :param mismatch_col: Column indicating mismatched CSMs
     :param ylabel: Label for the y-axis
+    :param figsize: Figure size
+    :param dpi: Figure DPI
     :return: Tuple of the resulting figure and the underlying data
     """
     # Calculate FDR if none provided
@@ -288,7 +296,7 @@ def fdr_mismatch_plot(df,
         ])
     )
     
-    fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
+    fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
 
     data = {
         'native mismatch': native_mismatch_cumsum['count']/samples_native_cumsum['count'],
