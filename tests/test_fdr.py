@@ -1,14 +1,13 @@
 import xiutilities.bi_fdr
 import pandas as pd
 import numpy as np
-import random
-import string
 
 
 def test_mono_fdr():
+    n_dd_samples = 100_000
     tt_score_offset = 1_000
     df = pd.DataFrame(columns=['decoy_class', 'match_score'])
-    dd_scores = np.array(range(100_000))
+    dd_scores = np.array(range(n_dd_samples))
     tt_scores = dd_scores.copy()
     td_scores = np.concatenate([dd_scores, dd_scores])
     tt_scores += tt_score_offset
