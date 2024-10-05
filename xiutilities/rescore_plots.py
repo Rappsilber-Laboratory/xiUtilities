@@ -209,6 +209,7 @@ def fdr_cutoff_plot(df,
 
 def fdr_mismatch_plot(df,
                       xlim=0.05,
+                      plot_fdr=True,
                       score_col='match_score',
                       rescore_col='xiMLScore',
                       fdr_steps=0.001,
@@ -301,8 +302,9 @@ def fdr_mismatch_plot(df,
     data = {
         'native mismatch': native_mismatch_cumsum['count']/samples_native_cumsum['count'],
         'rescore mismatch': rescore_mismatch_cumsum['count']/samples_rescored_cumsum['count'],
-        'fdr': fdr_series['fdr'],
     }
+    if plot_fdr:
+        data['fdr'] = fdr_series['fdr']
     
     sns.lineplot(
         ax=ax,
