@@ -225,6 +225,7 @@ def fdr_mismatch_plot(df,
 
     :param df: Input DF
     :param xlim: X plot limit
+    :param plot_fdr: Optional FDR plotting
     :param score_col: Native score column
     :param rescore_col: Rescored score column
     :param fdr_steps: FDR step resolution
