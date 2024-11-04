@@ -12,7 +12,7 @@ def fdr_cutoff_plot(df,
                     fdr_steps=0.001,
                     top_col='top_ranking',
                     top_col_rescored='xiMLScore_top_ranking',
-                    native_fdr_col=None,
+                    standard_fdr_col=None,
                     rescore_fdr_col=None,
                     mismatch_col=None,
                     target_col='isTT',
@@ -21,58 +21,58 @@ def fdr_cutoff_plot(df,
                     figsize=(12, 6),
                     dpi=100):
     """
-    Plot how many CSMs fall below certain FDR thresholds (x-axis) for a native and a rescored FDR.
+    Plot how many CSMs fall below certain FDR thresholds (x-axis) for a standard and a rescored FDR.
 
     :param df: DataFrame of CSMs
     :param xlim: Up to which FDR cutoff to plot
-    :param score_col: Name of the native score column
+    :param score_col: Name of the standard score column
     :param rescore_col: Name of the rescored score column
     :param fdr_steps: Step size of FDR cutoff points
-    :param top_col: Name of the native top ranking column
+    :param top_col: Name of the standard top ranking column
     :param top_col_rescored: Name of the rescored top ranking column
-    :param native_fdr_col: Name of the native FDR column
+    :param standard_fdr_col: Name of the standard FDR column
     :param rescore_fdr_col: Name of the rescored FDR column
     :param mismatch_col: Name of the mismatch indication column (if not provided, no mismatch counts are plotted)
     :param target_col: Name of the target indication column
     :param ylabel: Label for the y-axis
     :param figsize: Figure size
     :param dpi: Figure DPI
-    :param print_points: List of points where to print the relation of native and rescored matches
+    :param print_points: List of points where to print the relation of standard and rescored matches
     :return: A tuple of the figure and the DataFrame it originates from
     """
     # Calculate FDR if none provided
-    if native_fdr_col is None:
-        df.drop(['fdr_native', 'fdr_rescored'], axis=1, inplace=True, errors='ignore')
-        df.loc[:, 'fdr_native'] = fdr.calculate_bi_fdr(df, score_col=score_col)
+    if standard_fdr_col is None:
+        df.drop(['fdr_standard', 'fdr_rescored'], axis=1, inplace=True, errors='ignore')
+        df.loc[:, 'fdr_standard'] = fdr.calculate_bi_fdr(df, score_col=score_col)
     else:
-        df.loc[:, 'fdr_native'] = df.loc[:, native_fdr_col]
+        df.loc[:, 'fdr_standard'] = df.loc[:, standard_fdr_col]
 
     if rescore_fdr_col is None:
-        df.drop(['fdr_native', 'fdr_rescored'], axis=1, inplace=True, errors='ignore')
+        df.drop(['fdr_standard', 'fdr_rescored'], axis=1, inplace=True, errors='ignore')
         df.loc[:, 'fdr_rescored'] = fdr.calculate_bi_fdr(df, score_col=rescore_col)
     else:
         df.loc[:, 'fdr_rescored'] = df.loc[:, rescore_fdr_col]
     
     df = df[
-        ((df['fdr_native'] <= xlim) | (df['fdr_rescored'] <= xlim)) & df[target_col]
+        ((df['fdr_standard'] <= xlim) | (df['fdr_rescored'] <= xlim)) & df[target_col]
     ]
 
     fdr_x = np.arange(0, xlim+fdr_steps, fdr_steps)
 
-    samples_native_cumsum = pd.DataFrame(index=fdr_x)
+    samples_standard_cumsum = pd.DataFrame(index=fdr_x)
     samples_rescored_cumsum = pd.DataFrame(index=fdr_x)
     samples_gained_cumsum = pd.DataFrame(index=fdr_x)
     samples_lost_cumsum = pd.DataFrame(index=fdr_x)
     rescore_mismatch_cumsum = pd.DataFrame(index=fdr_x)
-    native_mismatch_cumsum = pd.DataFrame(index=fdr_x)
+    standard_mismatch_cumsum = pd.DataFrame(index=fdr_x)
     
     # Calculate sample number for FDR cutoff
-    native_below = df[
-        (df['fdr_native'] <= xlim) &
+    standard_below = df[
+        (df['fdr_standard'] <= xlim) &
         df[target_col]
     ]
-    samples_native_cumsum['count'] = samples_native_cumsum.index.to_series().apply(
-        lambda val: len(native_below[native_below['fdr_native'] <= val])
+    samples_standard_cumsum['count'] = samples_standard_cumsum.index.to_series().apply(
+        lambda val: len(standard_below[standard_below['fdr_standard'] <= val])
     )
     
     rescored_below = df[
@@ -90,7 +90,7 @@ def fdr_cutoff_plot(df,
     ]
     samples_gained_cumsum['count'] = samples_gained_cumsum.index.to_series().apply(
         lambda val: len(gain_cands[
-            (gain_cands['fdr_native'] > val) &
+            (gain_cands['fdr_standard'] > val) &
             (gain_cands['fdr_rescored'] <= val)
         ]) + len(rescored_below[
                 (rescored_below['fdr_rescored'] <= val) &
@@ -100,18 +100,18 @@ def fdr_cutoff_plot(df,
 
     # Calculate loss
     loss_cands = df[
-        (df['fdr_native'] <= xlim) &
+        (df['fdr_standard'] <= xlim) &
         df[target_col]
     ]
     samples_lost_cumsum['count'] = samples_lost_cumsum.index.to_series().apply(
         lambda val: len(loss_cands[
             (
-                (loss_cands['fdr_native'] <= val) &
+                (loss_cands['fdr_standard'] <= val) &
                 (loss_cands['fdr_rescored'] > val)
             )
-        ]) + len(native_below[
-                (native_below['fdr_native'] <= val) &
-                native_below[top_col] & (~native_below[top_col_rescored])
+        ]) + len(standard_below[
+                (standard_below['fdr_standard'] <= val) &
+                standard_below[top_col] & (~standard_below[top_col_rescored])
         ])
     )
 
@@ -127,15 +127,15 @@ def fdr_cutoff_plot(df,
             ])
         )
 
-        # Calculate native mismatch
-        native_mismatch_cand = df[
-            (df['fdr_native'] <= xlim) &
+        # Calculate standard mismatch
+        standard_mismatch_cand = df[
+            (df['fdr_standard'] <= xlim) &
             df[target_col] & df[mismatch_col]
         ]
-        native_mismatch_cumsum['count'] = native_mismatch_cumsum.index.to_series().apply(
-            lambda val: len(native_mismatch_cand[
+        standard_mismatch_cumsum['count'] = standard_mismatch_cumsum.index.to_series().apply(
+            lambda val: len(standard_mismatch_cand[
                 (
-                    (native_mismatch_cand['fdr_native'] <= val)
+                    (standard_mismatch_cand['fdr_standard'] <= val)
                 )
             ])
         )
@@ -143,7 +143,7 @@ def fdr_cutoff_plot(df,
     fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
 
     data = {
-        'native': samples_native_cumsum['count'],
+        'standard': samples_standard_cumsum['count'],
         'rescored': samples_rescored_cumsum['count'],
         'gained': samples_gained_cumsum['count'],
         'lost': samples_lost_cumsum['count']
@@ -158,10 +158,10 @@ def fdr_cutoff_plot(df,
     plt.ylabel(ylabel)
     
     ax.set_xlim(0, xlim)
-    xfilter = samples_native_cumsum.loc[:xlim].index
+    xfilter = samples_standard_cumsum.loc[:xlim].index
     
     ylim = max([
-        samples_native_cumsum.loc[xfilter, 'count'].max(),
+        samples_standard_cumsum.loc[xfilter, 'count'].max(),
         samples_rescored_cumsum.loc[xfilter, 'count'].max()
     ])*1.1
     
@@ -176,10 +176,10 @@ def fdr_cutoff_plot(df,
         x_idx = 0
         while x > fdr_x[x_idx] or x_idx >= len(fdr_x):
             x_idx += 1
-        y_native = samples_native_cumsum['count'].iloc[x_idx]
+        y_standard = samples_standard_cumsum['count'].iloc[x_idx]
         y_rescored = samples_rescored_cumsum['count'].iloc[x_idx]
-        y = max([y_native, y_rescored])
-        text = f"{y_native}→{y_rescored}"
+        y = max([y_standard, y_rescored])
+        text = f"{y_standard}→{y_rescored}"
         ax.plot(
             x,
             y,
@@ -193,7 +193,7 @@ def fdr_cutoff_plot(df,
     
     if mismatch_col is not None:
         data2 = {
-            'native mismatch': native_mismatch_cumsum['count']/data['native']*100,
+            'standard mismatch': standard_mismatch_cumsum['count']/data['standard']*100,
             'rescore mismatch': rescore_mismatch_cumsum['count']/data['rescored']*100,
             'fdr': fdr_x*100,
         }
@@ -214,7 +214,7 @@ def fdr_mismatch_plot(df,
                       rescore_col='xiMLScore',
                       fdr_steps=0.001,
                       target_col='isTT',
-                      native_fdr_col=None,
+                      standard_fdr_col=None,
                       rescore_fdr_col=None,
                       mismatch_col='mismatch',
                       ylabel='proportion',
@@ -226,11 +226,11 @@ def fdr_mismatch_plot(df,
     :param df: Input DF
     :param xlim: X plot limit
     :param plot_fdr: Optional FDR plotting
-    :param score_col: Native score column
+    :param score_col: standard score column
     :param rescore_col: Rescored score column
     :param fdr_steps: FDR step resolution
     :param target_col: Column indicating target-target CSMs
-    :param native_fdr_col: Native FDR
+    :param standard_fdr_col: standard FDR
     :param rescore_fdr_col: Rescored FDR
     :param mismatch_col: Column indicating mismatched CSMs
     :param ylabel: Label for the y-axis
@@ -239,34 +239,34 @@ def fdr_mismatch_plot(df,
     :return: Tuple of the resulting figure and the underlying data
     """
     # Calculate FDR if none provided
-    if native_fdr_col is None:
-        df.drop(['fdr_native', 'fdr_rescored'], axis=1, inplace=True, errors='ignore')
-        df.loc[:, 'fdr_native'] = fdr.calculate_bi_fdr(df, score_col=score_col)
+    if standard_fdr_col is None:
+        df.drop(['fdr_standard', 'fdr_rescored'], axis=1, inplace=True, errors='ignore')
+        df.loc[:, 'fdr_standard'] = fdr.calculate_bi_fdr(df, score_col=score_col)
     else:
-        df.loc[:, 'fdr_native'] = df.loc[:, native_fdr_col]
+        df.loc[:, 'fdr_standard'] = df.loc[:, standard_fdr_col]
 
     if rescore_fdr_col is None:
-        df.drop(['fdr_native', 'fdr_rescored'], axis=1, inplace=True, errors='ignore')
+        df.drop(['fdr_standard', 'fdr_rescored'], axis=1, inplace=True, errors='ignore')
         df.loc[:, 'fdr_rescored'] = fdr.calculate_bi_fdr(df, score_col=rescore_col)
     else:
         df.loc[:, 'fdr_rescored'] = df.loc[:, rescore_fdr_col]
     
     df = df.loc[
-        (df['fdr_native'] <= xlim) | (df['fdr_rescored'] <= xlim)
+        (df['fdr_standard'] <= xlim) | (df['fdr_rescored'] <= xlim)
     ]
 
     fdr_x = np.arange(0, xlim+fdr_steps, fdr_steps)
 
     fdr_series = pd.DataFrame(index=fdr_x, data={'fdr': fdr_x})
-    samples_native_cumsum = pd.DataFrame(index=fdr_x)
+    samples_standard_cumsum = pd.DataFrame(index=fdr_x)
     samples_rescored_cumsum = pd.DataFrame(index=fdr_x)
     rescore_mismatch_cumsum = pd.DataFrame(index=fdr_x)
-    native_mismatch_cumsum = pd.DataFrame(index=fdr_x)
+    standard_mismatch_cumsum = pd.DataFrame(index=fdr_x)
     
     # Calculate sample number for FDR cutoff
-    native_below = df.loc[df['fdr_native'] <= xlim]
-    samples_native_cumsum['count'] = samples_native_cumsum.index.to_series().apply(
-        lambda val: len(native_below[native_below['fdr_native'] <= val])
+    standard_below = df.loc[df['fdr_standard'] <= xlim]
+    samples_standard_cumsum['count'] = samples_standard_cumsum.index.to_series().apply(
+        lambda val: len(standard_below[standard_below['fdr_standard'] <= val])
     )
     
     rescored_below = df.loc[df['fdr_rescored'] <= xlim]
@@ -285,15 +285,15 @@ def fdr_mismatch_plot(df,
         ])
     )
 
-    # Calculate native mismatch
-    native_mismatch_cand = df.loc[
-        (df['fdr_native'] <= xlim) &
+    # Calculate standard mismatch
+    standard_mismatch_cand = df.loc[
+        (df['fdr_standard'] <= xlim) &
         df[target_col] & df[mismatch_col]
     ]
-    native_mismatch_cumsum.loc[:, 'count'] = native_mismatch_cumsum.index.to_series().apply(
-        lambda val: len(native_mismatch_cand[
+    standard_mismatch_cumsum.loc[:, 'count'] = standard_mismatch_cumsum.index.to_series().apply(
+        lambda val: len(standard_mismatch_cand[
             (
-                (native_mismatch_cand['fdr_native'] <= val)
+                (standard_mismatch_cand['fdr_standard'] <= val)
             )
         ])
     )
@@ -301,7 +301,7 @@ def fdr_mismatch_plot(df,
     fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
 
     data = {
-        'native mismatch': native_mismatch_cumsum['count']/samples_native_cumsum['count'],
+        'standard mismatch': standard_mismatch_cumsum['count']/samples_standard_cumsum['count'],
         'rescore mismatch': rescore_mismatch_cumsum['count']/samples_rescored_cumsum['count'],
     }
     if plot_fdr:
