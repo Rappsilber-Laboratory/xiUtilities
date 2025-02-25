@@ -29,6 +29,7 @@ requirements = [
     "deepmerge",
     "scipy>=1.0.1",
     "matplotlib",
+    "setuptools_scm",
 ]
 
 test_requirements = ['pytest>=3', ]
