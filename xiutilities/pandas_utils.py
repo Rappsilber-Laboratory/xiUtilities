@@ -39,7 +39,7 @@ def async_apply(df, f, target_size=10_000, max_cpu=1000, **kwargs):
     return pd.concat(results).copy()
 
 
-def swap_columns(df, mask, column_pairs: list[tuple]) -> pd.DataFrame:
+def swap_columns(df, mask, column_pairs: list) -> pd.DataFrame:
     """
     Swap column pairs where ``mask`` is ``True``.
 
