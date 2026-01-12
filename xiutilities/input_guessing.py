@@ -36,6 +36,10 @@ def guess_column_names(columns:list[str], static_mapping:dict = None):
                 name_mapping[coverage_guess[0]] = 'coverage_p1'
             if 'coverage_p2' not in name_mapping.values():
                 name_mapping[coverage_guess[1]] = 'coverage_p2'
+    if 'aa_len_p1' not in name_mapping.values():
+        name_mapping[_guess_len(columns)[0]] = 'aa_len_p1'
+    if 'aa_len_p2' not in name_mapping.values():
+        name_mapping[_guess_len(columns)[1]] = 'aa_len_p2'
     return name_mapping
 
 def _guess_score(columns: list[str]):
@@ -188,6 +192,30 @@ def _guess_decoy(columns: list[str]):
             _first_lower('.*decoy.*2', columns),
         )
     raise NoColumnNameGuess(f'Could not guess decoy columns.')
+
+def _guess_len(columns: list[str]):
+    columns_lower = [c.lower() for c in columns]
+    if 'aa_len_p1' in columns_lower and 'aa_len_p2' in columns_lower:
+        return (
+            _first_lower('aa_len_p1', columns),
+            _first_lower('aa_len_p2', columns),
+        )
+    if _re_in('.*length.*1', columns_lower) and _re_in('.*length.*2', columns_lower):
+        return (
+            _first_lower('.*length.*1', columns),
+            _first_lower('.*length.*2', columns),
+        )
+    if _re_in('.*len.*1', columns_lower) and _re_in('.*len.*2', columns_lower):
+        return (
+            _first_lower('.*len.*1', columns),
+            _first_lower('.*len.*2', columns),
+        )
+    if _re_in('.*alpha.*len.*', columns_lower) and _re_in('.*beta.*len.*2', columns_lower):
+        return (
+            _first_lower('.*alpha.*len.*', columns),
+            _first_lower('.*beta.*len.*2', columns),
+        )
+    raise NoColumnNameGuess(f'Could not guess sequence length columns.')
 
 def _guess_fdr_group(columns: list[str]):
     columns_lower = [c.lower() for c in columns]
