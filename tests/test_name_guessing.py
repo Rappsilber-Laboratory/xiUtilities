@@ -24,6 +24,7 @@ def test_xisearch2():
         'unique_peak_conservative_coverage_p1', 'unique_peak_conservative_coverage_p2',
         'conservative_fragsites_p1', 'conservative_fragsites_p2',
         'conservative_coverage_p1', 'conservative_coverage_p2',
+        'aa_len_p1', 'aa_len_p2',
     ]
     expected_mapping = {
         'match_score': 'score',
@@ -41,6 +42,8 @@ def test_xisearch2():
         'fdr_group': 'fdr_group',
         'unique_peak_conservative_coverage_p1': 'coverage_p1',
         'unique_peak_conservative_coverage_p2': 'coverage_p2',
+        'aa_len_p1': 'aa_len_p1',
+        'aa_len_p2': 'aa_len_p2',
     }
     mapping = guess_column_names(columns)
     assert expected_mapping == mapping
@@ -68,6 +71,7 @@ def test_java_xifdr():
         'Protein1FDR', 'Protein2FDR',
         'LinkFDR', 'PPIFDR', 'peptide pair id',
         'link id', 'ppi id',
+        'PeptideLength1', 'PeptideLength2',
     ]
     expected_mapping = {
         'Score': 'score',
@@ -83,6 +87,8 @@ def test_java_xifdr():
         'Decoy1': 'decoy_p1',
         'Decoy2': 'decoy_p2',
         'fdrGroup': 'fdr_group',
+        'PeptideLength1': 'aa_len_p1',
+        'PeptideLength2': 'aa_len_p2',
     }
     mapping = guess_column_names(columns)
     assert expected_mapping == mapping

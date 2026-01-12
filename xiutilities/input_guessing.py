@@ -1,45 +1,80 @@
 import re
 import warnings
 
-def guess_column_names(columns:list[str], static_mapping:dict = None):
+def guess_column_names(columns: list[str], static_mapping: dict = None):
     name_mapping = static_mapping.copy() if static_mapping else {}
+
     if 'score' not in name_mapping.values():
-        name_mapping[_guess_score(columns)] = 'score'
-    if 'sequence_p1' not in name_mapping.values():
-        name_mapping[_guess_sequence(columns)[0]] = 'sequence_p1'
-    if 'sequence_p2' not in name_mapping.values():
-        name_mapping[_guess_sequence(columns)[1]] = 'sequence_p2'
-    if 'start_pos_p1' not in name_mapping.values():
-        name_mapping[_guess_start_pos(columns)[0]] = 'start_pos_p1'
-    if 'start_pos_p2' not in name_mapping.values():
-        name_mapping[_guess_start_pos(columns)[1]] = 'start_pos_p2'
-    if 'link_pos_p1' not in name_mapping.values():
-        name_mapping[_guess_link_pos(columns)[0]] = 'link_pos_p1'
-    if 'link_pos_p2' not in name_mapping.values():
-        name_mapping[_guess_link_pos(columns)[1]] = 'link_pos_p2'
+        guess = _guess_score(columns)
+        if guess:
+            name_mapping[guess] = 'score'
+
+    if 'sequence_p1' not in name_mapping.values() or 'sequence_p2' not in name_mapping.values():
+        guess = _guess_sequence(columns)
+        if guess:
+            if 'sequence_p1' not in name_mapping.values() and guess[0] is not None:
+                name_mapping[guess[0]] = 'sequence_p1'
+            if 'sequence_p2' not in name_mapping.values() and len(guess) > 1 and guess[1] is not None:
+                name_mapping[guess[1]] = 'sequence_p2'
+
+    if 'start_pos_p1' not in name_mapping.values() or 'start_pos_p2' not in name_mapping.values():
+        guess = _guess_start_pos(columns)
+        if guess:
+            if 'start_pos_p1' not in name_mapping.values() and guess[0] is not None:
+                name_mapping[guess[0]] = 'start_pos_p1'
+            if 'start_pos_p2' not in name_mapping.values() and len(guess) > 1 and guess[1] is not None:
+                name_mapping[guess[1]] = 'start_pos_p2'
+
+    if 'link_pos_p1' not in name_mapping.values() or 'link_pos_p2' not in name_mapping.values():
+        guess = _guess_link_pos(columns)
+        if guess:
+            if 'link_pos_p1' not in name_mapping.values() and guess[0] is not None:
+                name_mapping[guess[0]] = 'link_pos_p1'
+            if 'link_pos_p2' not in name_mapping.values() and len(guess) > 1 and guess[1] is not None:
+                name_mapping[guess[1]] = 'link_pos_p2'
+
     if 'charge' not in name_mapping.values():
-        name_mapping[_guess_charge(columns)] = 'charge'
-    if 'protein_p1' not in name_mapping.values():
-        name_mapping[_guess_protein(columns)[0]] = 'protein_p1'
-    if 'protein_p2' not in name_mapping.values():
-        name_mapping[_guess_protein(columns)[1]] = 'protein_p2'
-    if 'decoy_p1' not in name_mapping.values():
-        name_mapping[_guess_decoy(columns)[0]] = 'decoy_p1'
-    if 'decoy_p2' not in name_mapping.values():
-        name_mapping[_guess_decoy(columns)[1]] = 'decoy_p2'
+        guess = _guess_charge(columns)
+        if guess is not None:
+            name_mapping[guess] = 'charge'
+
+    if 'protein_p1' not in name_mapping.values() or 'protein_p2' not in name_mapping.values():
+        guess = _guess_protein(columns)
+        if guess:
+            if 'protein_p1' not in name_mapping.values() and guess[0] is not None:
+                name_mapping[guess[0]] = 'protein_p1'
+            if 'protein_p2' not in name_mapping.values() and len(guess) > 1 and guess[1] is not None:
+                name_mapping[guess[1]] = 'protein_p2'
+
+    if 'decoy_p1' not in name_mapping.values() or 'decoy_p2' not in name_mapping.values():
+        guess = _guess_decoy(columns)
+        if guess:
+            if 'decoy_p1' not in name_mapping.values() and guess[0] is not None:
+                name_mapping[guess[0]] = 'decoy_p1'
+            if 'decoy_p2' not in name_mapping.values() and len(guess) > 1 and guess[1] is not None:
+                name_mapping[guess[1]] = 'decoy_p2'
+
     if 'fdr_group' not in name_mapping.values():
-        name_mapping[_guess_fdr_group(columns)] = 'fdr_group'
+        guess = _guess_fdr_group(columns)
+        if guess is not None:
+            name_mapping[guess] = 'fdr_group'
+
     if 'coverage_p1' not in name_mapping.values() or 'coverage_p2' not in name_mapping.values():
         coverage_guess = _guess_coverage(columns)
         if coverage_guess:
-            if 'coverage_p1' not in name_mapping.values():
+            if 'coverage_p1' not in name_mapping.values() and coverage_guess[0] is not None:
                 name_mapping[coverage_guess[0]] = 'coverage_p1'
-            if 'coverage_p2' not in name_mapping.values():
+            if 'coverage_p2' not in name_mapping.values() and len(coverage_guess) > 1 and coverage_guess[1] is not None:
                 name_mapping[coverage_guess[1]] = 'coverage_p2'
-    if 'aa_len_p1' not in name_mapping.values():
-        name_mapping[_guess_len(columns)[0]] = 'aa_len_p1'
-    if 'aa_len_p2' not in name_mapping.values():
-        name_mapping[_guess_len(columns)[1]] = 'aa_len_p2'
+
+    if 'aa_len_p1' not in name_mapping.values() or 'aa_len_p2' not in name_mapping.values():
+        guess = _guess_len(columns)
+        if guess:
+            if 'aa_len_p1' not in name_mapping.values() and guess[0] is not None:
+                name_mapping[guess[0]] = 'aa_len_p1'
+            if 'aa_len_p2' not in name_mapping.values() and len(guess) > 1 and guess[1] is not None:
+                name_mapping[guess[1]] = 'aa_len_p2'
+
     return name_mapping
 
 def _guess_score(columns: list[str]):
@@ -62,7 +97,8 @@ def _guess_score(columns: list[str]):
         if 'score' in c.lower():
             warnings.warn(f'Wild guess for score column: {c}.')
             return c
-    raise NoColumnNameGuess("Could not guess score column.")
+    warnings.warn("Could not guess score column.")
+    return None
 
 def _guess_sequence(columns: list[str]):
     columns_lower = [c.lower() for c in columns]
@@ -92,7 +128,8 @@ def _guess_sequence(columns: list[str]):
             _first_lower('AlphaPeptide', columns),
             _first_lower('BetaPeptide', columns),
         )
-    raise NoColumnNameGuess(f'Could not guess sequence columns.')
+    warnings.warn(f'Could not guess sequence columns.')
+    return (None, None)
 
 def _guess_start_pos(columns: list[str]):
     columns_lower = [c.lower() for c in columns]
@@ -117,7 +154,8 @@ def _guess_start_pos(columns: list[str]):
             _first_lower('alpha.*pos.*1', columns),
             _first_lower('beta.*pos.*2', columns),
         )
-    raise NoColumnNameGuess(f'Could not guess start position columns.')
+    warnings.warn(f'Could not guess start position columns.')
+    return (None, None)
 
 def _guess_link_pos(columns: list[str]):
     columns_lower = [c.lower() for c in columns]
@@ -143,7 +181,8 @@ def _guess_link_pos(columns: list[str]):
             _first_lower('alpha.*pos', columns),
             _first_lower('beta.*pos', columns),
         )
-    raise NoColumnNameGuess(f'Could not guess link position columns.')
+    warnings.warn(f'Could not guess link position columns.')
+    return (None, None)
 
 def _guess_charge(columns: list[str]):
     columns_lower = [c.lower() for c in columns]
@@ -153,7 +192,8 @@ def _guess_charge(columns: list[str]):
         return _first_lower('precursor.charge', columns)
     if _re_in('charge', columns_lower):
         return _first_lower('charge', columns)
-    raise NoColumnNameGuess(f'Could not guess charge column.')
+    warnings.warn(f'Could not guess charge column.')
+    return None
 
 def _guess_protein(columns: list[str]):
     columns_lower = [c.lower() for c in columns]
@@ -172,7 +212,8 @@ def _guess_protein(columns: list[str]):
             _first_lower('prot.*1', columns),
             _first_lower('prot.*2', columns),
         )
-    raise NoColumnNameGuess(f'Could not guess protein columns.')
+    warnings.warn(f'Could not guess protein columns.')
+    return (None, None)
 
 def _guess_decoy(columns: list[str]):
     columns_lower = [c.lower() for c in columns]
@@ -191,7 +232,8 @@ def _guess_decoy(columns: list[str]):
             _first_lower('.*decoy.*1', columns),
             _first_lower('.*decoy.*2', columns),
         )
-    raise NoColumnNameGuess(f'Could not guess decoy columns.')
+    warnings.warn(f'Could not guess decoy columns.')
+    return (None, None)
 
 def _guess_len(columns: list[str]):
     columns_lower = [c.lower() for c in columns]
@@ -215,7 +257,8 @@ def _guess_len(columns: list[str]):
             _first_lower('.*alpha.*len.*', columns),
             _first_lower('.*beta.*len.*2', columns),
         )
-    raise NoColumnNameGuess(f'Could not guess sequence length columns.')
+    warnings.warn(f'Could not guess sequence length columns.')
+    return (None, None)
 
 def _guess_fdr_group(columns: list[str]):
     columns_lower = [c.lower() for c in columns]
@@ -238,6 +281,7 @@ def _guess_fdr_group(columns: list[str]):
     if _re_in('.*homo.*', columns_lower):
         return _first_lower('.*homo.*', columns)
     warnings.warn('Could not guess fdr_group column.')
+    return None
 
 
 def _guess_coverage(columns: list[str]):
@@ -274,7 +318,7 @@ def _guess_coverage(columns: list[str]):
             _first_lower('.*coverage.*2', columns),
         )
     warnings.warn('Could not guess peak coverage columns.')
-    return None
+    return (None, None)
 
 def _re_in(pattern, strings):
     return any([
