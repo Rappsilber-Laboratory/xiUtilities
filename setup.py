@@ -13,26 +13,28 @@ with open('HISTORY.rst') as history_file:
 requirements = [
     "pandas>=1.3.5",
     "numpy>=1.7.2",
-    "setuptools",
     "numpy-indexed>=0.3.7",
     "tqdm>=4.66.0",
     "pyteomics>=4.6",
     "seaborn>=0.11.2",
+    "networkx>=2.6.3",
+    "multiprocess>=0.70.15",
+    "deepmerge",
+    "scipy>=1.0.1",
+    "matplotlib>=3.5.3",
+    "setuptools_scm>=7.1",
+]
+
+test_requirements = [
+    'pytest>=3',
     "pytest",
     "pydocstyle",
     "pytest-cov",
     "pytest-flake8",
     "pytest-pydocstyle",
     "flake8",
-    "networkx>=2.6.3",
-    "multiprocess>=0.70.15",
-    "deepmerge>=1.1.0",
-    "scipy>=1.0.1",
-    "matplotlib>=3.5.3",
-    "setuptools_scm>=7.1",
+    "setuptools",
 ]
-
-test_requirements = ['pytest>=3', ]
 
 setup(
     author="Falk Boudewijn Schimweg",
