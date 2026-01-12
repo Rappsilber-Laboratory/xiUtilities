@@ -4,3 +4,4 @@
 /build/
 /dist/
 /xiutilities/_version.py
+__pycache__/
