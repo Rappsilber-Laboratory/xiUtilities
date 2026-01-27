@@ -1,5 +1,5 @@
 
-xi_schema_overrides =  {
+xi_schema_overrides = {
     "Decoy1": bool,
     "Decoy2": bool,
     "LinkPos1": int,
@@ -11,4 +11,8 @@ xi_schema_overrides =  {
     "ProteinLinkPos1": str,
     "Containing": float,
     "Crosslinked": float,
+}
+
+scout_schema_overrides = {
+    "ClassificationScore": float,
 }
