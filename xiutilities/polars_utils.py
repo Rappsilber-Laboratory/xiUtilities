@@ -9,4 +9,6 @@ xi_schema_overrides =  {
     "PepPos2": str,
     "ProteinLinkPos2": str,
     "ProteinLinkPos1": str,
+    "Containing": float,
+    "Crosslinked": float,
 }
